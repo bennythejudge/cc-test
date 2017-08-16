@@ -1,0 +1,4 @@
+---
+  db_root_password: 'password'
+  db_drupal_password: 'drupal'
+  db_civicrm_password: 'civicrm'

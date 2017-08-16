@@ -1,0 +1,11 @@
+#cloud-config
+# Cloud config for application servers 
+
+runcmd:
+  # Install docker
+  - sudo apt-get update
+  - sudo apt-get -y install git python python-pip nginx awscli
+  - wget https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb
+  - sudo dpkg -i puppetlabs-release-pc1-xenial.deb
+  - sudo apt update
+  - sudo apt-get -y install puppet-agent

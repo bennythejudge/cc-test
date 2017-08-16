@@ -1,0 +1,13 @@
+.terraform
+*.tfstate
+*.backup
+cc_rsa
+cc_rsa.pub
+setup_ec2.sh
+terraform/files/
+mysql_root_password
+terraform/modules/
+terraform-provider-acme
+terraform/scripts/set-vars.sh
+ansible/*.retry
+.vagrant

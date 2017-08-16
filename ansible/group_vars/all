@@ -1,0 +1,57 @@
+---
+
+####################################################
+# Most common configuration options:
+####################################################
+drupal_domain: schoolofitalian.org
+
+
+####################################################
+# Database
+####################################################
+# change this if you're splitting your database into a separate machine
+# mattermost will try to connect to {{ db_server }}:5432
+db_server: localhost
+# if you're using a separate database server, enable this
+db_ssl_mode: disable
+
+drupal_db_user: drupal
+drupal_db_password: "your_drupal_user_password"
+
+civicrm_db_user: civicrm
+civicrm_db_password: "your_civicrm_user_password"
+
+mysql_root_home: /root
+mysql_root_username: 'root'
+mysql_root_password: "^superSecurePassword123$"
+
+drupal_db:
+  user: drupal
+  password: "wo#24n$fTD&CqNSqD6"
+  name: drupal
+
+mysql_users:
+  - name: "{{ drupal_db.user }}"
+    host: "%"
+    password: "{{ drupal_db.password }}"
+    priv: "{{ drupal_db.name }}.*:ALL"
+
+mysql_databases:
+  - name: "{{ drupal_db.name }}"
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+
+####################################################
+# System
+####################################################
+drupal_sysuser: "drupal"
+drupal_directory: /var/www/html
+
+
+####################################################
+# Web
+####################################################
+DRUPAL_VERSION: "7.41"
+DRUPAL_DOWNLOAD_COMPRESSED_FILE_NAME: "drupal-{{ DRUPAL_VERSION }}.tar.gz"
+DRUPAL_UNCOMPRESSED_VERSIONED_DIRECTORY: "drupal-{{ DRUPAL_VERSION }}"
+DRUPAL_DOWNLOAD_URL: http://ftp.drupal.org/files/projects/drupal-{{ DRUPAL_VERSION }}.tar.gz

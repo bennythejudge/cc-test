@@ -1,0 +1,11 @@
+.terraform
+*.tfstate
+*.backup
+cc_rsa
+cc_rsa.pub
+setup_ec2.sh
+files/
+mysql_root_password
+modules/
+terraform-provider-acme
+scripts/set-vars.sh

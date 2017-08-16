@@ -1,0 +1,77 @@
+---
+- name: SYSTEM | Remove postgresql
+  package: name={{ item }} state=absent
+  with_items:
+    - postgresql
+    - postgresql-contrib
+    - python-psycopg2
+
+- name: SYSTEM | Install basic database packages
+  package: name={{ item }} state=present
+  with_items:
+    - mysql-common
+    - mysql-server
+    - python-mysqldb
+
+- name: Copy .my.cnf file with root password credentials.
+  template:
+    src: templates/root-my.cnf.j2
+    dest: "{{ mysql_root_home }}/.my.cnf"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: MySQL | Update MySQL root password for localhost root account.
+  shell: >
+    mysql -u root -NBe
+    'ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY "{{ mysql_root_password }}";'
+
+- name: MySQL | Disallow root login remotely
+  command: 'mysql -NBe "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
+
+- name: MySQL | Ensure MySQL users are present.
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv | default('*.*:USAGE') }}"
+    state: "{{ item.state | default('present') }}"
+    append_privs: "{{ item.append_privs | default('no') }}"
+  with_items: "{{ mysql_users }}"
+
+
+- name: MySQL | Ensure MySQL databases are present.
+  mysql_db:
+    name: "{{ item.name }}"
+    collation: "{{ item.collation | default('utf8_general_ci') }}"
+    encoding: "{{ item.encoding | default('utf8') }}"
+    state: present
+  with_items: "{{ mysql_databases }}"
+
+# - name: POSTGRES | Create drupal database
+#   become: true
+#   become_user: postgres
+#   postgresql_db:
+#     db: drupal
+#     name: "{{ drupal_db_user }}"
+#     login_password: "{{ drupal_db_password }}"
+
+# - name: POSTGRES | Create civicrm DB user
+#   become: yes
+#   become_user: postgres
+#   postgresql_db:
+#     db: civicrm
+#     name: "{{ civicrm_db_user }}"
+#     login_password: "{{ civicrm_db_password }}"
+
+# - name: POSTGRES | Shore up DB privileges for our application user
+#   become: yes
+#   become_user: postgres
+#   postgresql_user:
+#     name: "{{ drupal_db_user }}"
+#     role_attr_flags: NOSUPERUSER,NOCREATEDB
+#   # postgresql_user:
+#   #   name: "{{ civicrm_db_user }}"
+#   #   role_attr_flags: NOSUPERUSER,NOCREATEDB

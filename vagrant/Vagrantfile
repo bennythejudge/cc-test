@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)"
+  config.vm.provision "shell", inline: <<-SHELL
+    if [ ! -e /var/tmp/.vagrant-provisioned ]; then
+      apt-get update
+      apt-get -y install git nginx ntp ntpdate python
+      ntpdate -u 0.ubuntu.pool.ntp.org
+      timedatectl list-timezones
+      timedatectl set-timezone Europe/Luxembourg
+      wget https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb
+      dpkg -i puppetlabs-release-pc1-xenial.deb
+      apt update
+      apt-get -y install puppet-agent
+      cp /home/ubuntu/.ssh/authorized_keys /root/.ssh
+      chmod 600 ~root/.ssh/authorized_keys
+      [ -d /etc/puppetlabs/code/environments/production ] && mv /etc/puppetlabs/code/environments/production /etc/puppetlabs/code/environments/production.orig
+      /opt/puppetlabs/bin/puppet module install puppetlabs-mysql
+      [ -e /etc/puppetlabs/puppet/hiera.yaml ] && /bin/rm /etc/puppetlabs/puppet/hiera.yaml || echo "no hiera file to delete"
+      [ -e /etc/puppet/puppet.conf ] && cat /etc/puppet/puppet.conf || echo "no /etc/puppet/puppet.conf"
+      touch /var/tmp/.vagrant-provisioned
+    else
+      echo "ALREADY PROVISIONED"
+    fi
+  SHELL
+  # config.vm.provision "puppet" do |puppet|
+  #   puppet.options = "--verbose --debug"
+  #   puppet.manifest_file = "site.pp"
+  #   puppet.environment = "production"
+  #   puppet.environment_path = "puppet"
+  # end
+end

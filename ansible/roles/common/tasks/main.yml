@@ -9,32 +9,10 @@
     - vim
     - curl
     - python-apt
-    - php-common
-    - php-gd
-    - php-curl
-    - php-ssh2
     - drush
 
-- name: PHP | Add php-7.0 PPA
-  apt_repository: repo='ppa:ondrej/php'
-              state=present
-              update_cache=yes
-
-- name: PHP | install php packages
-  apt: pkg={{ item }} state=installed
+- name: COMMON | Remove Apache
+  package: name={{ item }} state=absent
   with_items:
-    - php7.0-fpm
-    - php7.0-cli
-    - php7.0-common
-    - php7.0-curl
-    - php7.0-json
-    - php7.0-gd
-    - php7.0-mcrypt
-    - php7.0-odbc
-    - php7.0-mbstring
-    - php7.0-mysql
-    - php7.0-xmlrpc
-    - php7.0-opcache
-    - php7.0-intl
-    - php7.0-bz2
-    - php7.0-xml
+    - apache2
+    - httpd2

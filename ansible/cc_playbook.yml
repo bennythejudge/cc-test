@@ -7,5 +7,5 @@
   roles:
   - common
   - database
-  # - web
+  - web
   - drupal

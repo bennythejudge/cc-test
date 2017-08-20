@@ -2,31 +2,53 @@
 # - name: SYSTEM | Create drupal system user
 #   user: name="{{ drupal_sysuser }}" comment="drupal"
 
-- name: INSTALL | create drupal directory
-  file: path="{{ drupal_directory }}" state=directory
+- name: PRE INSTALL | check if drupal installed
+  stat:
+    path: "{{ www_doc_root }}/drupal"
+  register: drupal_installed
+  ignore_errors: True
+
+
+- debug:
+    msg: "Path exists and is a directory"
+  when: drupal_installed.stat.isdir is defined and drupal_installed.stat.isdir
+
+- debug:
+    msg: "Path DOES NOT exists"
+  when: drupal_installed.stat.isdir is not defined
+
+- debug:
+    msg: "Path exists but is not a directory"
+  when: drupal_installed.stat.isdir is defined and not drupal_installed.stat.isdir
+  
+- name: DEBUG
+  debug: msg="content of drupal_installed {{ drupal_installed }}"
 
 - block:
-    - name: INSTALL | Download and extract drupal
-      # unarchive is new in 2.0, and remote_src requires 2.2. For older versions, use 'get_url' and 'unarchive'
-      # unarchive: remote_src=yes src="{{ LATEST_MM_URL }}" dest="/home/{{ mattermost_sysuser }}/"
-      get_url: url={{ DRUPAL_DOWNLOAD_URL }} dest="{{ drupal_directory }}/drupal.tar.gz"
+  # - name: INSTALL | create drupal directory
+  #   file: path="{{ drupal_doc_root }}" state=directory
 
-    - name: INSTALL | Unarchive drupal
-      unarchive: 
-        copy=no src="{{ drupal_directory }}/drupal.tar.gz"
-        dest="{{ drupal_directory }}/"
-        owner=www-data
-        group=www-data
-      
-    - name: INSTALL | Link uncompressed directory to no-version name
-      file: 
-        src="{{ drupal_directory }}/{{ DRUPAL_UNCOMPRESSED_VERSIONED_DIRECTORY }}"
-        dest="{{ drupal_directory }}/drupal"
-        state=link
-        force=yes
+  - name: INSTALL | Download drupal
+    # unarchive is new in 2.0, and remote_src requires 2.2. For older versions, use 'get_url' and 'unarchive'
+    # unarchive: remote_src=yes src="{{ LATEST_MM_URL }}" dest="/home/{{ mattermost_sysuser }}/"
+    get_url: url={{ DRUPAL_DOWNLOAD_URL }} dest="/tmp/drupal.tar.gz"
 
-  #   - name: INSTALL | Ensure Mattermost appdata directory exists
-  #     file: path={{ mattermost_directory }}/data state=directory mode=0755 owner="{{ mattermost_sysuser }}"
+  - name: INSTALL | Unarchive drupal
+    unarchive: 
+      copy=no
+      src="/tmp/drupal.tar.gz"
+      dest="{{ www_doc_root }}"
+      owner=www-data
+      group=www-data
+
+  - name: INSTALL | Rename directory to no-version name
+    file: 
+      src="{{ www_doc_root }}/{{ DRUPAL_UNCOMPRESSED_VERSIONED_DIRECTORY }}"
+      dest="{{ www_doc_root }}/drupal"
+
+  when: drupal_installed.stat.isdir is not defined
+  # - name: INSTALL | Ensure Drupal directory exists
+  #   file: path={{ www_doc_root }}/drupal state=directory mode=0755 owner="{{ mattermost_sysuser }}"
 
   #   - name: INSTALL | Set up main Mattermost config file
   #     template: src=mattermost_config.json dest="{{ mattermost_directory }}/config/config.json"

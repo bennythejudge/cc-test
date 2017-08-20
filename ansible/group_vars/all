@@ -9,8 +9,6 @@ drupal_domain: schoolofitalian.org
 ####################################################
 # Database
 ####################################################
-# change this if you're splitting your database into a separate machine
-# mattermost will try to connect to {{ db_server }}:5432
 db_server: localhost
 # if you're using a separate database server, enable this
 db_ssl_mode: disable
@@ -55,3 +53,32 @@ DRUPAL_VERSION: "7.41"
 DRUPAL_DOWNLOAD_COMPRESSED_FILE_NAME: "drupal-{{ DRUPAL_VERSION }}.tar.gz"
 DRUPAL_UNCOMPRESSED_VERSIONED_DIRECTORY: "drupal-{{ DRUPAL_VERSION }}"
 DRUPAL_DOWNLOAD_URL: http://ftp.drupal.org/files/projects/drupal-{{ DRUPAL_VERSION }}.tar.gz
+
+www_doc_root: "/var/www/html"
+drupal_doc_root: "{{ www_doc_root }}/drupal"
+webserver: "nginx"
+drupal_unix_user: "wwwdata"
+
+####################################################
+# PHP
+####################################################
+#php_version: "5.6"
+php_version: "7.0"
+php_packages:
+  - "php{{ php_version }}"
+  - "php{{ php_version }}-fpm"
+  - "php{{ php_version }}-cli"
+  - "php{{ php_version }}-common"
+  - "php{{ php_version }}-curl"
+  - "php{{ php_version }}-json"
+  - "php{{ php_version }}-gd"
+  - "php{{ php_version }}-mcrypt"
+  - "php{{ php_version }}-odbc"
+  - "php{{ php_version }}-mbstring"
+  - "php{{ php_version }}-mysql"
+  - "php{{ php_version }}-xmlrpc"
+  - "php{{ php_version }}-opcache"
+  - "php{{ php_version }}-intl"
+  - "php{{ php_version }}-bz2"
+  - "php{{ php_version }}-xml"
+  - "libapache2-mod-php{{ php_version }}"

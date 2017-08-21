@@ -11,3 +11,4 @@ terraform-provider-acme
 terraform/scripts/set-vars.sh
 ansible/*.retry
 .vagrant
+vagrant/ubuntu-xenial-16.04-cloudimg-console.log

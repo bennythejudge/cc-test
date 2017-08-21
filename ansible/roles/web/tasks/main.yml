@@ -27,14 +27,14 @@
   with_items:
     - "{{ php_packages }}"
 
-# - name: Nginx | Copy over vhosts configuration
-#   template:
-#     src: templates/nginx/vhosts.conf.j2
-#     dest: "/etc/nginx/sites-available/drupal.conf"
-#     owner: root
-#     group: root
-#     mode: 0600
-#   notify: restart nginx
+- name: Nginx | Copy over vhosts configuration
+  template:
+    src: templates/vhosts.conf.j2
+    dest: "/etc/nginx/sites-available/drupal.conf"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart nginx
 
 # - name: Nginx | Enable site
 #   file:

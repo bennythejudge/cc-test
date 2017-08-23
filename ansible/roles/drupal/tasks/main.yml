@@ -25,9 +25,6 @@
   debug: msg="content of drupal_installed {{ drupal_installed }}"
 
 - block:
-  # - name: INSTALL | create drupal directory
-  #   file: path="{{ drupal_doc_root }}" state=directory
-
   - name: INSTALL | Download drupal
     # unarchive is new in 2.0, and remote_src requires 2.2. For older versions, use 'get_url' and 'unarchive'
     # unarchive: remote_src=yes src="{{ LATEST_MM_URL }}" dest="/home/{{ mattermost_sysuser }}/"

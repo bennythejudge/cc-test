@@ -55,7 +55,7 @@ DRUPAL_UNCOMPRESSED_VERSIONED_DIRECTORY: "drupal-{{ DRUPAL_VERSION }}"
 DRUPAL_DOWNLOAD_URL: http://ftp.drupal.org/files/projects/drupal-{{ DRUPAL_VERSION }}.tar.gz
 
 www_doc_root: "/var/www/html"
-drupal_doc_root: "{{ www_doc_root }}/drupal"
+drupal_docroot: "{{ www_doc_root }}/drupal"
 webserver: "nginx"
 drupal_unix_user: "wwwdata"
 

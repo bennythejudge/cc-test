@@ -6,22 +6,6 @@
 - name: NGINX | Install nginx
   package: name=nginx state=present update_cache=yes
 
-# - name: NGINX | Remove default vhost
-#   file: path=/etc/nginx/sites-enabled/default state=absent
-
-# - name: NGINX | Configure drupal vhost
-#   template: src=drupal.conf dest=/etc/nginx/conf.d/drupal.conf
-#   notify:
-#     - reload nginx
-
-- name: NGINX | nginx should be running, and enabled at boot
-  service: name=nginx state=started enabled=yes
-
-# - name: PHP | Add php-7.0 PPA
-#   apt_repository: repo='ppa:ondrej/php'
-#               state=present
-#               update_cache=yes
-
 - name: PHP | install php packages
   apt: pkg={{ item }} state=installed
   with_items:
@@ -36,15 +20,18 @@
     mode: 0600
   notify: restart nginx
 
-# - name: Nginx | Enable site
-#   file:
-#     src: "/etc/nginx/sites-available/drupal.conf"
-#     dest: "/etc/nginx/sites-enabled/drupal.conf"
-#     state: link
-#   notify: restart nginx
+- name: Nginx | Enable site
+  file:
+    src: "/etc/nginx/sites-available/drupal.conf"
+    dest: "/etc/nginx/sites-enabled/drupal.conf"
+    state: link
+  notify: restart nginx
 
-# - name: Nginx | Disable default site
-#   file:
-#     path: "/etc/nginx/sites-enabled/default"
-#     state: absent
-#   notify: restart nginx
+- name: Nginx | Disable default site
+  file:
+    path: "/etc/nginx/sites-enabled/default"
+    state: absent
+  notify: restart nginx
+
+- name: NGINX | nginx should be running, and enabled at boot
+  service: name=nginx state=started enabled=yes

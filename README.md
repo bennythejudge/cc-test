@@ -1,5 +1,7 @@
 # CC test checklist
 
+[![GuardRails badge](https://badges.production.guardrails.io/bennythejudge/cc-test.svg)](https://www.guardrails.io)
+
 
 ## task I performed manually
   - create a hosted zone for my domain (this should be done using terraform)
